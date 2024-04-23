@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_USER=myusername
+      - MYSQL_PASSWORD=mypassword
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8888:80"
+    depends_on:
+      - api
